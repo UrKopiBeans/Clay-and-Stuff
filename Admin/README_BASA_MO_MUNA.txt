@@ -1,0 +1,1 @@
+kapag may bagong sql database na code idagdag mo sa figurify mga  nadadag o bago tapos gawa ka file na sql kung saan yung mga bagong codelang i run kosa database ko yang figurify_db kopya ko yan ng database ko buong code para alam ko 

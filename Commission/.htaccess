@@ -1,0 +1,20 @@
+# Commission form upload limits — maraming figure per submit, bawat isa may
+# larawan, kaya kailangan mas mataas sa default upload_max_filesize/post_max_size.
+# Ito para sa mod_php (Apache) hosting; .user.ini sa parehong folder ang gagana
+# kung PHP-FPM. Naka-both, ligtas, hindi sila magkakasalungat.
+
+<IfModule mod_php.c>
+    php_value upload_max_filesize 25M
+    php_value post_max_size 30M
+    php_value max_file_uploads 50
+    php_value max_execution_time 120
+    php_value max_input_time 120
+</IfModule>
+
+<IfModule mod_php7.c>
+    php_value upload_max_filesize 25M
+    php_value post_max_size 30M
+    php_value max_file_uploads 50
+    php_value max_execution_time 120
+    php_value max_input_time 120
+</IfModule>

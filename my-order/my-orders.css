@@ -1,0 +1,1575 @@
+/* my orders page - redesigned UI, same data/flow lang, based sa approved mockup */
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:"Trebuchet MS",Arial,sans-serif;
+    color:#75445e;
+    background-color:#fffdf3;
+
+    background-image:
+        linear-gradient(rgba(214,198,229,.25) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(214,198,229,.25) 1px, transparent 1px);
+
+    background-size:25px 25px;
+
+    line-height:1.5;
+}
+
+
+/* hero banner — same size/pwesto ng bilog gaya ng sa Commission page,
+   iba lang ang kulay ng bilog per page (My Orders / Payment /
+   Notifications / My Profile) para hindi magkamukha lahat */
+
+.hero{
+    position:relative;
+
+    min-height:220px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    text-align:center;
+
+    overflow:hidden;
+
+    background:
+        linear-gradient(
+            120deg,
+            #d9c8ff,
+            #fffbe8 45%,
+            #ffe7f5
+        );
+
+    border-bottom:3px solid #e8d9ed;
+
+    margin-bottom:24px;
+}
+
+.hero:before{
+    content:"";
+
+    position:absolute;
+
+    width:300px;
+    height:300px;
+
+    left:-130px;
+    top:-150px;
+
+    border-radius:50%;
+
+    background:#bba5ed;
+}
+
+.hero:after{
+    content:"✦   ☆   ✧   ♡   ✦";
+
+    position:absolute;
+
+    right:7%;
+    top:25px;
+
+    color:#edc95d;
+
+    font-size:19px;
+
+    letter-spacing:7px;
+}
+
+.hero-content{
+    position:relative;
+    z-index:2;
+
+    max-width:680px;
+
+    padding:26px 20px;
+}
+
+.hero-small{
+    color:#a04a78;
+
+    font-size:11px;
+    font-weight:bold;
+
+    letter-spacing:2px;
+}
+
+.hero h1{
+    margin-top:8px;
+
+    color:#86365f;
+
+    font-family:Georgia,serif;
+
+    font-size:clamp(30px,4.4vw,46px);
+
+    line-height:1.05;
+}
+
+.hero p{
+    margin-top:15px;
+
+    color:#8a5870;
+
+    font-size:14px;
+}
+
+/* per-page circle color — same size/pwesto lang, iba ang kulay */
+
+.hero-orders:before{
+    background:#7fa3e0;
+}
+
+.hero-payment:before{
+    background:#6fc191;
+}
+
+.hero-notif:before{
+    background:#e88891;
+}
+
+.hero-profile:before{
+    background:#e0bb5b;
+}
+
+
+/* page / header */
+
+.orders-page{
+    width:min(1400px,95%);
+    margin:auto;
+    padding:6px 0 24px;
+}
+
+.orders-header{
+    margin-bottom:10px;
+    flex-shrink:0;
+}
+
+.orders-header h1{
+    color:#86365f;
+    font-family:Georgia,serif;
+    font-size:clamp(26px,4vw,34px);
+}
+
+.orders-header p{
+    margin-top:6px;
+    color:#956d80;
+    font-size:13px;
+}
+
+
+/* notice banner */
+
+.order-notice{
+    margin-bottom:20px;
+    padding:12px 16px;
+    border-radius:14px;
+    font-size:12px;
+    font-weight:800;
+}
+
+.order-notice-success{
+    background:#e3f6ea;
+    color:#2f6b46;
+    border:1px solid #bfe4cc;
+}
+
+.order-notice-cancel{
+    background:#fdeaea;
+    color:#a3403f;
+    border:1px solid #f3c6c6;
+}
+
+.order-notice-info{
+    background:#eef3fb;
+    color:#33517a;
+    border:1px solid #cddaf0;
+}
+
+
+/* empty state */
+
+.no-orders{
+    text-align:center;
+    padding:60px 20px;
+    background:rgba(255,255,255,.92);
+    border:2px solid white;
+    outline:1px solid #e4d5df;
+    border-radius:22px;
+    box-shadow:5px 7px 0 rgba(216,194,222,.3);
+}
+
+.no-orders-icon{
+    font-size:42px;
+    margin-bottom:10px;
+}
+
+.no-orders p{
+    color:#956d80;
+    font-size:13px;
+    margin-bottom:14px;
+}
+
+.no-orders a{
+    display:inline-block;
+    padding:12px 26px;
+    border-radius:20px;
+    background:linear-gradient(135deg,#f2699b,#e0447f);
+    color:white;
+    text-decoration:none;
+    font-size:11px;
+    font-weight:900;
+    box-shadow:0 6px 14px rgba(224,68,127,.35);
+    transition:.15s;
+}
+
+.no-orders a:hover{
+    filter:brightness(1.05);
+}
+
+
+/* main layout: order list + details */
+
+.orders-layout{
+    display:grid;
+    grid-template-columns:270px 1fr;
+    gap:22px;
+    align-items:start;
+}
+
+@media (max-width:800px){
+
+    .orders-layout{
+        grid-template-columns:1fr;
+    }
+
+    .orders-list-col{
+        position:static;
+    }
+
+}
+
+
+/* normal page scroll na (dati hidden footer), list at summary sticky pa rin */
+
+
+/* far left: order list (sidebar) */
+
+.orders-list-col{
+    position:sticky;
+    top:98px; /* 78px navbar clearance + 20px breathing room, para di matakpan ng navbar */
+}
+
+.orders-list-shell{
+    background:rgba(255,255,255,.92);
+    border:2px solid white;
+    outline:1px solid #e4d5df;
+    border-radius:22px;
+    box-shadow:5px 7px 0 rgba(216,194,222,.3);
+    padding:18px 14px 14px;
+}
+
+.orders-toolbar{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:12px;
+}
+
+/* status filter dropdown, katabi ng search bar — shortcut para i-filter
+   ang mga order per status, gaya ng filter sa staff/owner pages */
+
+.orders-filter-dropdown{
+    position:relative;
+    flex-shrink:0;
+}
+
+.orders-filter-trigger{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:9px 13px;
+    border-radius:999px;
+    font-size:11px;
+    font-weight:800;
+    font-family:inherit;
+    color:#b23e82;
+    background:#ffe4f2;
+    border:1px solid #f2a4ca;
+    cursor:pointer;
+    white-space:nowrap;
+}
+
+.orders-filter-caret{
+    width:10px;
+    height:10px;
+    flex-shrink:0;
+    transition:transform .15s ease;
+}
+
+.orders-filter-dropdown.open .orders-filter-caret{
+    transform:rotate(180deg);
+}
+
+.orders-filter-menu{
+    display:none;
+    flex-direction:column;
+    gap:2px;
+
+    position:absolute;
+    top:calc(100% + 6px);
+    left:0;
+    z-index:20;
+
+    min-width:180px;
+    max-height:320px;
+    overflow-y:auto;
+
+    background:white;
+    border:1px solid #f0d9e4;
+    border-radius:12px;
+    box-shadow:5px 7px 0 rgba(216,194,222,.25);
+    padding:6px;
+}
+
+.orders-filter-dropdown.open .orders-filter-menu{
+    display:flex;
+}
+
+.orders-filter-option{
+    display:block;
+    padding:8px 10px;
+    border-radius:8px;
+    font-size:11.5px;
+    font-weight:700;
+    color:#4a2a3a;
+    text-decoration:none;
+    white-space:nowrap;
+    cursor:pointer;
+}
+
+.orders-filter-option:hover{
+    background:#fff3f8;
+}
+
+.orders-filter-option.active{
+    background:#ffe4f2;
+    color:#b23e82;
+}
+
+.orders-search-wrap{
+    position:relative;
+    margin-bottom:0;
+    flex:1;
+    min-width:0;
+}
+
+.orders-search-input{
+    width:100%;
+    font-family:inherit;
+    font-size:13px;
+    color:#4a2a3a;
+    background:#fff8fb;
+    border:1px solid #f0d9e4;
+    border-radius:12px;
+    padding:10px 12px;
+    box-sizing:border-box;
+    outline:none;
+    transition:.15s;
+}
+
+.orders-search-input:focus{
+    border-color:#f2a4ca;
+    box-shadow:0 0 0 3px rgba(242,164,202,.25);
+}
+
+.orders-search-empty{
+    text-align:center;
+    font-size:12.5px;
+    color:#a58a95;
+    padding:14px 6px;
+}
+
+.orders-list-scroll{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    max-height:calc(100vh - 228px); /* 150px dati + 78px navbar clearance */
+    overflow-y:auto;
+    padding:3px 4px 5px 2px;
+    scrollbar-width:thin;
+    scrollbar-color:#f2a4ca transparent;
+}
+
+.orders-list-scroll::-webkit-scrollbar{width:6px;}
+.orders-list-scroll::-webkit-scrollbar-track{background:transparent;}
+.orders-list-scroll::-webkit-scrollbar-thumb{background:#f2a4ca;border-radius:10px;}
+
+.order-list-item{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    width:100%;
+    text-align:left;
+    cursor:pointer;
+    font-family:inherit;
+    color:inherit;
+    background:rgba(255,255,255,.92);
+    border:2px solid white;
+    outline:1px solid #e4d5df;
+    border-radius:16px;
+    padding:12px 14px;
+    box-shadow:5px 7px 0 rgba(216,194,222,.25);
+    transition:.15s;
+}
+
+.order-list-item:hover{
+    transform:translateY(-2px);
+}
+
+.order-list-item.active{
+    border-color:#f2a4ca;
+    background:#fff0f7;
+    box-shadow:5px 7px 0 rgba(242,164,202,.4);
+}
+
+.order-list-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    margin-bottom:6px;
+}
+
+.order-list-id{
+    font-family:Georgia,serif;
+    font-weight:bold;
+    color:#873c63;
+    font-size:13px;
+}
+
+.order-list-date{
+    color:#a17488;
+    font-size:9px;
+    margin-bottom:4px;
+}
+
+.order-list-count{
+    color:#a17488;
+    font-size:9px;
+    margin-top:2px;
+}
+
+
+/* status badge colors, source: order_status_helper.php */
+
+.order-status{
+    flex-shrink:0;
+    padding:5px 10px;
+    border-radius:20px;
+    font-size:8px;
+    font-weight:900;
+    letter-spacing:.4px;
+    white-space:nowrap;
+}
+
+.status-pending{background: #FFF3C4;color: #29252A;}
+.status-quoted{background: #E1F3E7;color: #29252A;}
+.status-awaiting_payment{background: #FBE8D6;color: #29252A;white-space:normal;max-width:64px;text-align:center;line-height:1.25;}
+.status-to_verify{background: #E1F3E7;color: #29252A;}
+.status-for_approval{background: #E1F3E7;color: #29252A;}
+.status-processing{background: #FBE8D6;color: #29252A;}
+.status-awaiting_balance{background: #FBE8D6;color: #29252A;}
+.status-to_verify_balance{background: #E1F3E7;color: #29252A;}
+.status-for_balance_approval{background: #E1F3E7;color: #29252A;}
+
+/* not from order_status_helper.php, overlay lang for pending revision requests */
+.status-revision{background: #FBE8D6;color: #29252A;}
+.status-to_ship{background: #E8EDFF;color: #29252A;}
+.status-shipped{background: #E8EDFF;color: #29252A;}
+.status-completed{background: #E1F3E7;color: #29252A;}
+.status-cancelled{background: #FADCDC;color: #29252A;}
+
+
+/* order detail: placeholder / panel toggle */
+
+.orders-detail-col{
+    min-width:0;
+}
+
+.order-detail-placeholder{
+    display:none;
+    text-align:center;
+    padding:70px 20px;
+    background:rgba(255,255,255,.85);
+    border:2px solid white;
+    outline:1px solid #e4d5df;
+    border-radius:24px;
+    box-shadow:5px 7px 0 rgba(216,194,222,.3);
+}
+
+.order-detail-placeholder.active{
+    display:block;
+}
+
+.order-detail-placeholder .no-orders-icon{
+    font-size:34px;
+}
+
+.order-detail-placeholder p{
+    color:#956d80;
+    font-size:13px;
+}
+
+.order-detail-panel{
+    display:none;
+}
+
+.order-detail-panel.active{
+    display:block;
+}
+
+
+/* order card panel */
+
+.order-card{
+    background:rgba(255,255,255,.95);
+    border:3px solid white;
+    outline:1px solid #e4d5df;
+    border-radius:22px;
+    padding:20px;
+    box-shadow:5px 7px 0 rgba(216,194,222,.3);
+    scroll-margin-top:98px; /* para pag scrollIntoView, di matabunan ng navbar */
+}
+
+/* detail grid: main info + side summary */
+
+.detail-grid{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:20px;
+    align-items:start;
+}
+
+@media (max-width:1100px){
+    .detail-grid{
+        grid-template-columns:1fr;
+    }
+}
+
+.detail-main{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+    min-width:0;
+}
+
+.detail-side{
+    min-width:0;
+}
+
+@media (min-width:801px){
+    .detail-side{
+        position:sticky;
+        top:98px; /* pareho ng left order-list para same ang space nila sa navbar */
+        align-self:start;
+    }
+}
+
+
+/* generic card style */
+
+.card{
+    background:rgba(255,255,255,.92);
+    border:2px solid white;
+    outline:1px solid #e4d5df;
+    border-radius:20px;
+    box-shadow:5px 7px 0 rgba(216,194,222,.25);
+    padding:20px;
+}
+
+
+/* order information card */
+
+.order-info-title{
+    color:#d2417a;
+    font-weight:bold;
+    font-size:13px;
+    letter-spacing:.2px;
+    margin-bottom:14px;
+}
+
+.order-info-grid{
+    display:grid;
+    grid-template-columns:repeat(3, minmax(0, 1fr));
+    gap:10px;
+}
+
+@media (max-width:900px){
+    .order-info-grid{grid-template-columns:repeat(2, minmax(0, 1fr));}
+}
+
+@media (max-width:520px){
+    .order-info-grid{grid-template-columns:1fr;}
+}
+
+.info-chip{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    background:#fffaf6;
+    border:1px solid #f5e6ee;
+    border-radius:12px;
+    padding:9px 12px;
+    font-size:12.5px;
+    min-width:0;
+}
+
+.info-chip .icon{
+    font-size:16px;
+    flex-shrink:0;
+}
+
+.info-chip .txt{
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+}
+
+.info-chip .dt{
+    font-size:10px;
+    color:#a97b90;
+    text-transform:uppercase;
+    letter-spacing:.3px;
+}
+
+.info-chip .dd{
+    font-weight:bold;
+    color:#75445e;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+
+/* figure viewer card */
+
+.order-figures-title{
+    color:#a17488;
+    font-size:10px;
+    font-weight:900;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+    margin-bottom:12px;
+}
+
+.figure-tabs{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    margin-bottom:18px;
+}
+
+.figure-tab-btn{
+    border:none;
+    background:transparent;
+    font-size:12px;
+    font-weight:bold;
+    color:#a97b90;
+    padding:8px 16px;
+    border-radius:14px;
+    cursor:pointer;
+    transition:.15s;
+    font-family:inherit;
+}
+
+.figure-tab-btn.active{
+    color:#d2417a;
+    background:#fdeaf1;
+}
+
+.figure-tab-btn:hover:not(.active){
+    color:#d2417a;
+}
+
+.order-figure:not(.active){
+    display:none;
+}
+
+
+/* viewer grid: figure details | custom box */
+
+.viewer-grid{
+    display:grid;
+    grid-template-columns:1.1fr 1.3fr;
+    gap:22px;
+    align-items:start;
+}
+
+@media (max-width:650px){
+    .viewer-grid{grid-template-columns:1fr;}
+}
+
+.viewer-column{
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+}
+
+.details-title{
+    color:#d2417a;
+    font-weight:bold;
+    font-size:13px;
+    letter-spacing:.3px;
+    margin-bottom:14px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+
+
+/* reusable line item card (image + label + value + price) */
+
+.detail-item-list{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-bottom:8px;
+}
+
+.detail-item-card{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:#fffaf6;
+    border:1px solid #f5e6ee;
+    border-radius:14px;
+    padding:9px 12px;
+}
+
+.detail-item-image{
+    width:44px;
+    height:44px;
+    border-radius:10px;
+    object-fit:cover;
+    flex-shrink:0;
+    background:#fff0f7;
+}
+
+.detail-item-noimage{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:19px;
+    background:#fdeaf1;
+}
+
+.detail-item-body{
+    display:flex;
+    flex-direction:column;
+    flex:1;
+    min-width:0;
+    gap:1px;
+}
+
+.detail-item-label{
+    font-size:10px;
+    color:#a97b90;
+    text-transform:uppercase;
+    letter-spacing:.3px;
+}
+
+.detail-item-value{
+    font-size:13px;
+    color:#75445e;
+    word-break:break-word;
+}
+
+.detail-item-price{
+    flex-shrink:0;
+    font-size:13px;
+    font-weight:bold;
+    color:#d2417a;
+    white-space:nowrap;
+    text-align:right;
+}
+
+.detail-item-price.muted{
+    color:#c9b3bf;
+    font-weight:normal;
+}
+
+
+/* notes to artist */
+
+.notes-box{
+    margin:4px 0 8px;
+    padding:10px 12px;
+    background:#fff8fc;
+    border:1px dashed #e5a7c6;
+    border-radius:12px;
+    font-size:12.5px;
+}
+
+.notes-box strong{
+    display:block;
+    margin-bottom:4px;
+    color:#873c63;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+}
+
+.notes-box p{
+    color:#5c3348;
+    line-height:1.5;
+    word-break:break-word;
+    white-space:pre-wrap;
+}
+
+
+/* reference image gallery */
+
+.reference-section,
+.box-reference-section{
+    margin-top:auto;
+    padding-top:14px;
+}
+
+.gallery-label{
+    font-size:11.5px;
+    font-weight:bold;
+    color:#75445e;
+    margin-bottom:10px;
+    display:flex;
+    align-items:baseline;
+    gap:6px;
+}
+
+.gallery-label-count{
+    font-weight:normal;
+    font-size:10px;
+    color:#a97b90;
+}
+
+.gallery-row{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.gallery-thumb{
+    width:66px;
+    height:66px;
+    border-radius:12px;
+    object-fit:cover;
+    cursor:pointer;
+    border:2px solid white;
+    outline:1px solid #e6d4e4;
+    background:#f3eef1;
+    transition:.15s;
+}
+
+.gallery-thumb:hover{
+    outline-color:#f2a4ca;
+    transform:scale(1.05);
+}
+
+.no-image{
+    width:100%;
+    padding:16px 0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#a99da4;
+    font-size:11px;
+    text-align:center;
+    border-radius:12px;
+    border:2px dashed #e6d4e4;
+    background:#f9f5f4;
+}
+
+
+/* custom box card */
+
+.box-card{
+    background:#fdf4f8;
+    border:1px solid #f4d9e6;
+    border-radius:16px;
+    padding:16px;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+}
+
+.box-card-title{
+    color:#d2417a;
+    font-weight:bold;
+    font-size:13px;
+    margin-bottom:14px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+
+/* custom box empty state (walang add-on) */
+
+.box-card-empty{
+    flex:1;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    background:#fdf4f8;
+    border:2px dashed #f0c6dc;
+}
+
+.box-empty-state{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    padding:26px 14px;
+}
+
+.box-empty-icon{
+    font-size:32px;
+    opacity:.55;
+    margin-bottom:4px;
+}
+
+.box-empty-title{
+    font-weight:bold;
+    color:#a4476d;
+    font-size:12.5px;
+}
+
+.box-empty-text{
+    color:#b696a4;
+    font-size:11px;
+    max-width:220px;
+    line-height:1.5;
+}
+
+.box-detail-grid{
+    display:grid;
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+    gap:11px 18px;
+    font-size:12.5px;
+    margin-bottom:6px;
+}
+
+.box-detail-grid div{
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    gap:1px;
+}
+
+.box-detail-grid div.full-row{
+    grid-column:1 / -1;
+}
+
+.box-detail-grid div span:first-child{
+    color:#a97b90;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.3px;
+}
+
+
+/* payment/shipping/refund card, separate container from figure viewer */
+
+.customer-payment-card{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
+
+.customer-payment-details-title{
+    color:#d2417a;
+    font-weight:bold;
+    font-size:13px;
+    letter-spacing:.2px;
+    margin-bottom:14px;
+}
+
+.customer-payment-details-grid{
+    display:grid;
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+    gap:11px 18px;
+    font-size:12.5px;
+}
+
+.customer-payment-details-grid span{
+    display:block;
+}
+
+.customer-payment-details-grid strong{
+    color:#a97b90;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.3px;
+    display:block;
+    margin-bottom:2px;
+    font-weight:700;
+}
+
+.customer-payment-proof{
+    margin-top:14px;
+}
+
+.customer-payment-proof-title{
+    color:#a97b90;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.3px;
+    margin-bottom:8px;
+}
+
+.customer-payment-proof-thumb{
+    display:block;
+    max-width:220px;
+    max-height:220px;
+    width:auto;
+    height:auto;
+    object-fit:cover;
+    border-radius:12px;
+    border:2px solid white;
+    outline:1px solid #e4d5df;
+    cursor:pointer;
+    transition:.15s ease;
+}
+
+.customer-payment-proof-thumb:hover{
+    transform:translateY(-2px);
+}
+
+/* Gap hawak na ng .customer-payment-card, divider line na lang dito */
+.customer-payment-details + .customer-payment-details{
+    padding-top:18px;
+    border-top:1px solid #f0dbe7;
+}
+
+.box-detail-grid div span:last-child{
+    font-weight:bold;
+    color:#873c63;
+    word-break:break-word;
+}
+
+@media (max-width:520px){
+    .box-detail-grid{grid-template-columns:1fr;}
+}
+
+
+/* progress update box, laging makikita, dati site-wide popup ito */
+
+.progress-update-box{
+    background:#fff5f8;
+    border:2px solid #f2a4ca;
+    border-radius:16px;
+    padding:16px;
+    margin-bottom:18px;
+}
+
+/* Iba't ibang border color per status, para agad makilala kahit di pa nababasa ang text */
+
+.progress-update-box.progress-update-approved,
+.progress-update-box.progress-update-final{
+    border-color:#7fc98a;
+    background:#f2faf3;
+}
+
+.progress-update-box.progress-update-revision{
+    border-color:#f2a4ca;
+    background:#fff5f8;
+}
+
+.progress-update-box.progress-update-in_progress{
+    border-color:#7ec8e3;
+    background:#f0f9fd;
+}
+
+.progress-update-box.progress-update-declined{
+    border-color:#e0a458;
+    background:#fdf6ec;
+}
+
+.progress-update-title{
+    font-family:Georgia,serif;
+    font-weight:bold;
+    font-size:14.5px;
+    color:#86365f;
+    margin-bottom:12px;
+}
+
+.progress-update-image{
+    width:100%;
+    border-radius:14px;
+    border:1px solid #eee0e9;
+    margin-bottom:12px;
+    display:block;
+    cursor:zoom-in;
+}
+
+.progress-update-caption{
+    background:white;
+    color:#75445e;
+    padding:12px 14px;
+    border-radius:12px;
+    font-size:12.5px;
+    line-height:1.5;
+    margin-bottom:12px;
+}
+
+.progress-update-question{
+    color:#75445e;
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:12px;
+}
+
+.progress-update-buttons{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.progress-update-buttons button,
+.progress-update-revision-box button{
+    padding:12px 20px;
+    border:none;
+    border-radius:14px;
+    font-weight:900;
+    font-size:12px;
+    cursor:pointer;
+    transition:.15s;
+    font-family:inherit;
+    flex:1;
+}
+
+.btn-progress-good{
+    background:#7fc98a;
+    color:white;
+    box-shadow:0 4px 0 #5da76a;
+}
+
+.btn-progress-good:hover{
+    background:#6bb877;
+}
+
+.btn-progress-revise{
+    background:#f2a4ca;
+    color:white;
+    box-shadow:0 4px 0 #d17ca7;
+}
+
+.btn-progress-revise:hover{
+    background:#e98db9;
+}
+
+.progress-update-revision-box{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-top:4px;
+}
+
+.progress-update-revision-box label{
+    font-size:12px;
+    font-weight:700;
+    color:#75445e;
+}
+
+.progress-update-revision-box textarea{
+    padding:12px 14px;
+    border-radius:12px;
+    border:2px solid #ecd9e4;
+    background:#fffdf8;
+    color:#75445e;
+    font-family:inherit;
+    font-size:13px;
+    resize:vertical;
+}
+
+.btn-progress-send-revision{
+    align-self:flex-start;
+    background:#f2a4ca;
+    color:white;
+    box-shadow:0 4px 0 #d17ca7;
+}
+
+.btn-progress-send-revision:hover{
+    background:#e98db9;
+}
+
+
+/* status text lang (walang buttons) kapag na-respond na or final na */
+
+.progress-update-status{
+    padding:12px 14px;
+    border-radius:12px;
+    font-size:12.5px;
+    font-weight:700;
+    line-height:1.5;
+    background:white;
+}
+
+.progress-status-approved{
+    color:#3f8a4c;
+}
+
+.progress-status-revision{
+    color: #29252A;
+}
+
+.progress-status-in-progress{
+    color:#2f7fa6;
+}
+
+.progress-status-declined{
+    color:#b57327;
+}
+
+
+/* action box (Quoted / Awaiting Payment / To Verify), top of summary card */
+
+.action-box{
+    border-radius:16px;
+    padding:16px;
+    margin-bottom:18px;
+}
+
+.action-box.action-quoted{
+    background:#fdeaf1;
+}
+
+.action-box.action-awaiting{
+    background:#fff3e2;
+}
+
+.action-box.action-verify{
+    background:#eef6ee;
+}
+
+.action-box.action-completed{
+    background:#e9f7ef;
+}
+
+.action-title{
+    font-weight:bold;
+    font-size:13.5px;
+    color:#75445e;
+    margin-bottom:6px;
+}
+
+.action-text{
+    font-size:12.5px;
+    color:#8a6b78;
+    line-height:1.5;
+}
+
+.action-deadline{
+    display:block;
+    margin-top:6px;
+    font-size:11.5px;
+    color:#c94f4f;
+    font-weight:bold;
+}
+
+.action-buttons{
+    display:flex;
+    gap:10px;
+    margin-top:14px;
+    flex-wrap:nowrap;
+}
+
+.action-buttons form{
+    display:inline-block;
+    flex:1;
+    min-width:0;
+}
+
+@media (max-width:420px){
+    .action-buttons{
+        flex-wrap:wrap;
+    }
+}
+
+.btn-continue,
+.btn-cancel{
+    display:inline-block;
+    border:none;
+    padding:11px 20px;
+    border-radius:14px;
+    font-size:12.5px;
+    font-weight:bold;
+    font-family:inherit;
+    cursor:pointer;
+    text-align:center;
+    text-decoration:none;
+    transition:.15s;
+    width:100%;
+}
+
+.btn-continue{
+    background:linear-gradient(135deg,#f2699b,#e0447f);
+    color:white;
+    box-shadow:0 6px 14px rgba(224,68,127,.35);
+}
+
+.btn-continue:hover{
+    filter:brightness(1.05);
+}
+
+.btn-cancel{
+    border:1px solid #e0447f;
+    background:white;
+    color:#d2417a;
+}
+
+.btn-cancel:hover{
+    background:#fdf4f8;
+}
+
+.btn-link{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    flex:1;
+    min-width:0;
+}
+
+/* proceed/cancel pair (Continue Order / Proceed to Payment & Shipping,
+   paired with Cancel Order) — dapat magkatabi lagi, green ang proceed,
+   red ang cancel */
+
+.action-buttons .btn-continue{
+    background:#4f9d6c;
+    box-shadow:0 6px 14px rgba(79,157,108,.35);
+    white-space:nowrap;
+}
+
+.action-buttons .btn-continue:hover{
+    background:#3f8558;
+}
+
+.action-buttons .btn-cancel{
+    border:1px solid #d9534f;
+    background:#d9534f;
+    color:white;
+}
+
+.action-buttons .btn-cancel:hover{
+    background:#c1443f;
+}
+
+
+/* order summary (right column) */
+
+.detail-side .summary-card{
+    position:sticky;
+    top:98px; /* pareho ng left order-list para same ang space nila sa navbar */
+}
+
+.summary-title{
+    color:#d2417a;
+    font-family:Georgia,serif;
+    font-weight:bold;
+    font-size:15px;
+    margin-bottom:14px;
+}
+
+.summary-lines{
+    display:flex;
+    flex-direction:column;
+}
+
+.summary-line{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:13px;
+    padding:8px 0;
+    gap:10px;
+}
+
+.summary-line .icon{
+    margin-right:8px;
+}
+
+.summary-line .label-wrap{
+    display:flex;
+    align-items:center;
+    color:#75445e;
+}
+
+.summary-divider{
+    height:1px;
+    background:#f0e3ea;
+    margin:8px 0;
+}
+
+.summary-total{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    margin-top:6px;
+}
+
+.summary-total .label{
+    color:#d2417a;
+    font-weight:bold;
+    font-size:11.5px;
+    letter-spacing:.3px;
+    text-transform:uppercase;
+}
+
+.summary-total .amount{
+    color:#d2417a;
+    font-weight:bold;
+    font-size:22px;
+    white-space:nowrap;
+}
+
+.expiry-note{
+    margin-top:14px;
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    background:#fff7f0;
+    border-radius:14px;
+    padding:12px 14px;
+    font-size:12px;
+    color:#8a6b78;
+}
+
+
+/* image lightbox */
+
+.image-lightbox{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(60,30,45,.75);
+    z-index:5000; /* mas mataas sa navbar */
+    align-items:center;
+    justify-content:center;
+    padding:30px;
+}
+
+.image-lightbox.show{
+    display:flex;
+}
+
+.image-lightbox-content{
+    position:relative;
+    max-width:min(600px,92vw);
+    text-align:center;
+}
+
+.image-lightbox-content img{
+    max-width:100%;
+    max-height:78vh;
+    border-radius:14px;
+    box-shadow:0 20px 60px rgba(0,0,0,.35);
+    object-fit:contain;
+    background:#fff;
+}
+
+.image-lightbox-label{
+    margin-top:12px;
+    color:#fff0f7;
+    font-size:12px;
+    font-weight:700;
+}
+
+.image-lightbox-close{
+    position:absolute;
+    top:-18px;
+    right:-18px;
+    width:34px;
+    height:34px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:none;
+    border-radius:50%;
+    background:white;
+    color:#d2417a;
+    font-size:14px;
+    font-weight:900;
+    cursor:pointer;
+    box-shadow:0 2px 6px rgba(0,0,0,.15);
+    transition:.15s;
+}
+
+.image-lightbox-close:hover{
+    background:#fdeaf1;
+    transform:scale(1.08);
+}
+
+@media(max-width:500px){
+    .image-lightbox-close{top:-14px;right:0;}
+}
+
+
+
+
+
+/* ------------------------------------------------------------------
+   IMAGE SUBMISSION — Figure Details kagaya ng Dress Up: walang larawan,
+   maliliit na card na magkakatabi (Figure Style, Product Type, Size,
+   Figure Name). Custom Box pa rin sa kanan.
+------------------------------------------------------------------ */
+
+.viewer-grid:not(.dressup-grid) > .viewer-column:first-child .detail-item-list{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px;
+}
+
+.viewer-grid:not(.dressup-grid) > .viewer-column:first-child .detail-item-image{
+    display:none;
+}
+
+.viewer-grid:not(.dressup-grid) > .viewer-column:first-child .detail-item-card{
+    flex-direction:column;
+    align-items:flex-start;
+    justify-content:flex-start;
+    gap:3px;
+    padding:8px 10px;
+    min-width:0;
+}
+
+.viewer-grid:not(.dressup-grid) > .viewer-column:first-child .detail-item-body{
+    width:100%;
+    min-width:0;
+}
+
+.viewer-grid:not(.dressup-grid) > .viewer-column:first-child .detail-item-label{
+    font-size:9px;
+}
+
+.viewer-grid:not(.dressup-grid) > .viewer-column:first-child .detail-item-value{
+    font-size:12px;
+    line-height:1.25;
+}
+
+.viewer-grid:not(.dressup-grid) > .viewer-column:first-child .detail-item-price{
+    font-size:11px;
+}
+
+.viewer-grid:not(.dressup-grid) > .viewer-column:first-child .detail-item-price.muted{
+    display:none;
+}

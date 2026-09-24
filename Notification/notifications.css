@@ -1,0 +1,155 @@
+/* override ang .orders-page width galing my-orders.css (para
+   sa two-column layout) — isang column lang dito sa Notifications
+   kaya masyadong malapad kung ganoon pa rin */
+
+.orders-page{
+    width:min(640px, 92%);
+}
+
+.orders-header{
+    text-align:center;
+}
+
+
+/* notification list container — nag-i-scroll ito sa loob
+   (max-height), hindi na buong page, kapag marami na */
+
+.notification-list{
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+
+    max-height:460px;
+
+    overflow-y:auto;
+
+    padding:14px;
+
+    background:rgba(255,255,255,.55);
+
+    border:2px solid white;
+
+    outline:1px solid #e4d5df;
+
+    border-radius:22px;
+
+    box-shadow:
+        5px 7px 0 rgba(216,194,222,.2);
+}
+
+.notification-list::-webkit-scrollbar{
+    width:8px;
+}
+
+.notification-list::-webkit-scrollbar-track{
+    background:transparent;
+}
+
+.notification-list::-webkit-scrollbar-thumb{
+    background:#f2a4ca;
+
+    border-radius:8px;
+}
+
+.notification-list::-webkit-scrollbar-thumb:hover{
+    background:#e98db9;
+}
+
+/* isang notification item */
+.notification-card{
+    position:relative;
+
+    display:flex;
+
+    align-items:flex-start;
+
+    gap:12px;
+
+    padding:16px;
+
+    background:rgba(255,255,255,.9);
+
+    border:2px solid white;
+
+    outline:1px solid #e4d5df;
+
+    border-radius:18px;
+
+    text-decoration:none;
+
+    color:inherit;
+
+    box-shadow:
+        5px 7px 0 rgba(216,194,222,.25);
+
+    transition:.15s;
+}
+
+.notification-card:hover{
+    transform:translateY(-2px);
+}
+
+.notification-card.unread{
+    border-color:#f2a4ca;
+
+    background:#fff0f7;
+}
+
+/* bilog na icon sa kaliwa ng bawat notification */
+.notification-icon{
+    flex-shrink:0;
+
+    width:38px;
+    height:38px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:50%;
+
+    background:#f8acd2;
+
+    color:white;
+
+    font-weight:900;
+
+    font-size:15px;
+}
+
+.notification-body p{
+    color:#75445e;
+
+    font-size:12px;
+
+    line-height:1.5;
+}
+
+.notification-body span{
+    display:block;
+
+    margin-top:6px;
+
+    color:#a17488;
+
+    font-size:9px;
+}
+
+/* pink dot — nagpapakita kung "unread" pa ang notification */
+.notification-dot{
+    position:absolute;
+
+    top:16px;
+    right:16px;
+
+    width:9px;
+    height:9px;
+
+    border-radius:50%;
+
+    background:#f2a4ca;
+}

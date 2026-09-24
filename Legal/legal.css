@@ -1,0 +1,266 @@
+/* Shared stylesheet ng Legal pages (Privacy, T&C, Refund,
+   Commission Terms). Same reset + graph paper bg gaya ng
+   Home/Commission/my-orders/owner/staff, para magkatugma. */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #fffdf3;
+    background-image:
+        linear-gradient(rgba(214, 198, 229, .25) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(214, 198, 229, .25) 1px, transparent 1px);
+    background-size: 25px 25px;
+}
+
+.legal-page {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 32px 24px 64px;
+    font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+    color: #3a2233;
+    line-height: 1.7;
+}
+
+/* HERO — same banner as Commission/My Orders/Payment/Notifications/
+   My Profile: same size/pwesto ng bilog, iba lang ang kulay per page
+   para hindi magkamukha lahat. */
+
+.hero{
+    position:relative;
+
+    min-height:220px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    text-align:center;
+
+    overflow:hidden;
+
+    background:
+        linear-gradient(
+            120deg,
+            #d9c8ff,
+            #fffbe8 45%,
+            #ffe7f5
+        );
+
+    border-bottom:3px solid #e8d9ed;
+
+    margin-bottom:32px;
+}
+
+.hero:before{
+    content:"";
+
+    position:absolute;
+
+    width:300px;
+    height:300px;
+
+    left:-130px;
+    top:-150px;
+
+    border-radius:50%;
+
+    background:#bba5ed;
+}
+
+.hero:after{
+    content:"✦   ☆   ✧   ♡   ✦";
+
+    position:absolute;
+
+    right:7%;
+    top:25px;
+
+    color:#edc95d;
+
+    font-size:19px;
+
+    letter-spacing:7px;
+}
+
+.hero-content{
+    position:relative;
+    z-index:2;
+
+    max-width:680px;
+
+    padding:26px 20px;
+}
+
+.hero-small{
+    color:#a04a78;
+
+    font-size:11px;
+    font-weight:bold;
+
+    letter-spacing:2px;
+}
+
+.hero h1{
+    margin-top:8px;
+
+    color:#86365f;
+
+    font-family:Georgia,serif;
+
+    font-size:clamp(30px,4.4vw,46px);
+
+    line-height:1.05;
+}
+
+.hero p{
+    margin-top:15px;
+
+    color:#8a5870;
+
+    font-size:14px;
+}
+
+/* per-page circle color — Terms and Conditions (rose), Privacy Policy
+   (teal), Commission & Order Terms (peach) */
+
+.hero-terms:before{
+    background:#e893b6;
+}
+
+.hero-privacy:before{
+    background:#79c6bd;
+}
+
+.hero-commission-terms:before{
+    background:#e8a468;
+}
+
+/* HEADER — "last updated" + cross-reference note under the hero */
+.legal-page .legal-header {
+    margin-bottom: 32px;
+}
+
+.legal-page .legal-eyebrow {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    /* pinadilim mula #c96b9c papuntang #a8447a para pasado sa
+       WCAG AA 4.5:1 na contrast laban sa #fdeaf4 background */
+    color: #a8447a;
+    background: #fdeaf4;
+    padding: 6px 14px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+}
+
+.legal-page h1 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 34px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0 0 8px;
+}
+
+.legal-page .legal-updated {
+    font-size: 13px;
+    color: #8a6b7d;
+}
+
+/* CONTENT CARD — yung malaking box na naglalaman ng aktwal na tekstong legal */
+.legal-page .legal-card {
+    background: linear-gradient(145deg, #fff5fa, #f4edff);
+    border: 2px solid white;
+    border-radius: 20px;
+    padding: 32px 34px;
+    box-shadow: 0 0 0 1px #dfd1e1, 5px 7px 0 rgba(215, 192, 221, .35);
+    margin-bottom: 24px;
+}
+
+.legal-page .legal-card h2 {
+    font-size: 20px;
+    color: #831843;
+    margin: 0 0 12px;
+}
+
+.legal-page .legal-card h2:not(:first-child) {
+    margin-top: 26px;
+}
+
+.legal-page .legal-card h3 {
+    font-size: 15.5px;
+    color: #a94873;
+    margin: 18px 0 8px;
+}
+
+.legal-page .legal-card p {
+    margin: 0 0 14px;
+    font-size: 15px;
+}
+
+.legal-page .legal-card ul {
+    margin: 0 0 14px;
+    padding-left: 20px;
+}
+
+.legal-page .legal-card li {
+    margin-bottom: 8px;
+    font-size: 15px;
+}
+
+.legal-page .legal-card strong {
+    color: #1a1a1a;
+}
+
+.legal-page .legal-note {
+    background: #fffbed;
+    border: 1px solid #f0e2a8;
+    border-radius: 14px;
+    padding: 14px 18px;
+    font-size: 13.5px;
+    color: #6b5a1f;
+}
+
+.legal-page .legal-placeholder {
+    background: #fff2f2;
+    border: 1px dashed #e3a6a6;
+    color: #a13d3d;
+    padding: 2px 6px;
+    border-radius: 6px;
+    font-size: 0.95em;
+}
+
+.legal-page .legal-back-link {
+    display: inline-block;
+    margin-top: 4px;
+    font-size: 14px;
+    color: #c96b9c;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.legal-page .legal-back-link:hover {
+    text-decoration: underline;
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+
+    .legal-page {
+        padding: 32px 16px 48px;
+    }
+
+    .legal-page h1 {
+        font-size: 26px;
+    }
+
+    .legal-page .legal-card {
+        padding: 22px 20px;
+    }
+
+}
