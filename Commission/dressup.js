@@ -653,6 +653,7 @@ let camera = null;
 let renderer = null;
 let controls = null;
 let figureResizeObserver = null;
+let figureShadow = null;
 
 let bodyModel = null;
 
@@ -1470,6 +1471,11 @@ function clearCurrentScene() {
     bodyModel = null;
 
 
+    if (figureShadow) {
+        figureShadow.visible = false;
+    }
+
+
     Object.keys(
         currentObjects
     ).forEach(
@@ -2134,6 +2140,83 @@ function getLoadedObject(slot) {
 }
 
 
+// Soft contact shadow sa ilalim ng figure (radial gradient plane, hindi
+// nakadepende sa lights kaya pare-pareho sa lahat ng models).
+function updateFigureShadow(box, size, center) {
+
+    if (!scene) {
+        return;
+    }
+
+
+    if (!figureShadow) {
+        const shadowCanvas =
+            document.createElement("canvas");
+
+        shadowCanvas.width = 256;
+        shadowCanvas.height = 256;
+
+        const context =
+            shadowCanvas.getContext("2d");
+
+        const gradient =
+            context.createRadialGradient(
+                128, 128, 0,
+                128, 128, 128
+            );
+
+        gradient.addColorStop(0, "rgba(0, 0, 0, 0.45)");
+        gradient.addColorStop(0.5, "rgba(0, 0, 0, 0.2)");
+        gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
+
+        context.fillStyle = gradient;
+        context.fillRect(0, 0, 256, 256);
+
+        figureShadow =
+            new THREE.Mesh(
+                new THREE.PlaneGeometry(1, 1),
+                new THREE.MeshBasicMaterial(
+                    {
+                        map: new THREE.CanvasTexture(shadowCanvas),
+                        transparent: true,
+                        depthWrite: false
+                    }
+                )
+            );
+
+        figureShadow.rotation.x = -Math.PI / 2;
+        figureShadow.renderOrder = -1;
+
+        scene.add(
+            figureShadow
+        );
+    }
+
+
+    const footprint =
+        Math.max(
+            size.x,
+            size.z
+        ) * 1.3;
+
+
+    figureShadow.scale.set(
+        footprint,
+        footprint * 0.75,
+        1
+    );
+
+    figureShadow.position.set(
+        center.x,
+        box.min.y + 0.001,
+        center.z
+    );
+
+    figureShadow.visible = true;
+
+}
+
+
 function frameFigure() {
 
     if (!bodyModel || !camera || !controls) {
@@ -2186,6 +2269,13 @@ function frameFigure() {
             size.y,
             size.z
         );
+
+
+    updateFigureShadow(
+        box,
+        size,
+        center
+    );
 
 
     const distance =
@@ -4892,17 +4982,6 @@ async function renderCurrentCategory() {
             // Hirono and Chibi start neutral grey until the customer chooses a skin tone.
             applySkinColor("#808080");
         }
-        else if (
-            activeCategory === "funko" &&
-            activeState.model &&
-            /Funko pop-girl\.glb$/i.test(
-                activeState.model.model || ""
-            )
-        ) {
-            applySkinColor(
-                "#F2CCB7"
-            );
-        }
 
 
         const order =
@@ -6490,6 +6569,7 @@ function init3D() {
 
 
     scene = new THREE.Scene();
+    figureShadow = null;
 
     camera = new THREE.PerspectiveCamera(
         35,
