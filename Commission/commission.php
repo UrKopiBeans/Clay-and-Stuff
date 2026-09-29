@@ -61,7 +61,7 @@ if (isset($_SESSION["user_id"])) {
 
 <title>Clay and Stuff — Commission</title>
 
-  <link rel="stylesheet" href="commission.css?v=30" />
+  <link rel="stylesheet" href="commission.css?v=31" />
 
 </head>
 <body>

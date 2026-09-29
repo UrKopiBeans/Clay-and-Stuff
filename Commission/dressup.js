@@ -3774,6 +3774,9 @@ function applyCustomColor(category, slot, color, input) {
             });
         }
     }
+    else if (isSandoColorSlot(category, slot)) {
+        applySandoColor(color);
+    }
 
 
     state.currentCategory = category;
@@ -4878,6 +4881,11 @@ function applySkinColor(color) {
 
 
     const isHirono = state.currentCategory === "hirono";
+    const isFunko = state.currentCategory === "funko";
+
+    // Stand (Acrylic_Stand / Clear_Acrylic) must never take the skin color, for every figure.
+    const standMaterialFragments = ["stand", "pedestal", "support", "clear_acrylic"];
+    const standNodeFragments = ["acrylic_stand", "stand", "pedestal", "support"];
 
     applyColorToModel(
         bodyModel,
@@ -4885,13 +4893,69 @@ function applySkinColor(color) {
         {
             clearTextureMaps: false,
             skipMaterialFragments: isHirono
-                ? ["stand", "pedestal", "support", "shoe", "foot", "sole", "clear_acrylic"]
-                : [],
+                ? [...standMaterialFragments, "shoe", "foot", "sole"]
+                : standMaterialFragments,
             skipNodeFragments: isHirono
-                ? ["acrylic_stand", "stand", "pedestal", "support", "shoes", "foot"]
-                : []
+                ? [...standNodeFragments, "shoes", "foot", "sando"]
+                : isFunko
+                    ? [...standNodeFragments, "sando", "socks"]
+                    : standNodeFragments
         }
     );
+
+}
+
+
+// Funko: top/topColor, Hirono: outfit/outfitColor. Ang default Sando ay
+// part ng body GLB kaya dito lang nagbabago ang kulay niya, hindi sa skin.
+const sandoSlotsByCategory = {
+    funko: { top: "top", color: "topColor" },
+    hirono: { top: "outfit", color: "outfitColor" }
+};
+
+
+function isSandoColorSlot(category, slot) {
+
+    const slots = sandoSlotsByCategory[category];
+
+    return Boolean(slots && (slot === slots.top || slot === slots.color));
+
+}
+
+
+function isDefaultSandoSelected() {
+
+    const category = state.currentCategory;
+    const slots = sandoSlotsByCategory[category];
+    const top = slots && state[category] && state[category][slots.top];
+
+    return Boolean(
+        top &&
+        top.name === "Sando" &&
+        isPlaceholderModelPath(top.model)
+    );
+
+}
+
+
+function applySandoColor(color) {
+
+    if (!bodyModel || !isDefaultSandoSelected() || !color) {
+        return;
+    }
+
+    const sandoMeshes = [];
+
+    bodyModel.traverse(function(node) {
+        if (node.isMesh && String(node.name || "").toLowerCase().includes("sando")) {
+            sandoMeshes.push(node);
+        }
+    });
+
+    applyColorToMeshList(sandoMeshes, color, {
+        clearTextureMaps: true,
+        skipMaterialFragments: ["design", "logo", "print"]
+    });
 
 }
 
@@ -5020,6 +5084,13 @@ async function renderCurrentCategory() {
                         : (colorItem ? colorItem.color : null),
                     token
                 );
+
+                if (
+                    isSandoColorSlot(activeCategory, slot) &&
+                    colorItem
+                ) {
+                    applySandoColor(colorItem.color);
+                }
             }
             catch (error) {
                 console.warn(
@@ -5575,6 +5646,9 @@ function syncHironoGenderOptions() {
         .querySelectorAll('[data-figure="hirono"][data-hirono-gender]')
         .forEach(card => {
             card.hidden = Boolean(selectedGender) && card.dataset.hironoGender !== selectedGender;
+            // Some shared card styles set a display value, so clear it explicitly
+            // for matching cards and keep filtered cards out of the layout.
+            card.style.display = card.hidden ? "none" : "";
         });
 
 }
@@ -5738,6 +5812,13 @@ async function selectAccessory(card) {
                 renderToken
             );
 
+        if (
+            isSandoColorSlot(category, slot) &&
+            colorItem
+        ) {
+            applySandoColor(colorItem.color);
+        }
+
 
         if (loaded) {
             frameFigure();
@@ -5853,6 +5934,9 @@ function selectColor(card) {
                 }
             );
         }
+    }
+    else if (isSandoColorSlot(category, slot)) {
+        applySandoColor(item.color);
     }
 
 

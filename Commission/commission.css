@@ -5983,7 +5983,7 @@ textarea:focus{
 #dressUpModule .category-panel > .option-section:not([hidden]) > .option-grid {
     flex: none;
     min-height: 0;
-    max-height: 214px;          /* isang hanay ng card (195px) + kaunting espasyo */
+    max-height: 424px;          /* dalawang hanay ng card (2 x 195px + 15px gap) + kaunting espasyo */
     overflow-y: auto;
     padding: 6px 8px 6px 6px;
     margin: -6px -8px 0 -6px;
